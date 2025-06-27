@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Carta para Nico 🎉</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      font-family: 'Comic Sans MS', cursive;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      color: white;
+      text-align: center;
+    }
+
+    #card {
+      background: rgba(0,0,0,0.7);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #fff;
+      cursor: pointer;
+      max-width: 90%;
+    }
+
+    #message {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+
+    .imagen-final {
+      display: none;
+      max-width: 100%;
+      width: 300px;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #fff;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <div id="card" onclick="nextMessage()">
+    <div id="message">Haz clic para abrir tu carta 💌</div>
+    <img id="imagen1" class="imagen-final" src="Imagen 1.jpg" alt="Dedicatoria">
+    <img id="imagenBeso" class="imagen-final" src="Imagen2.jpg" alt="Beso final">
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const mensajes = [
+      "🎉 ¡Feliz Cumpleaños Nico! 🎂",
+      "💖 Eres una persona increíble, y me siento muy feliz de tenerte como mi mejor amiga. ¡Que tu día esté lleno de alegría, risas y abrazos sinceros! 🎁",
+      "" // para la imagen del beso
+    ];
+
+    let index = 0;
+
+    function nextMessage() {
+      const msg = document.getElementById("message");
+      const img1 = document.getElementById("imagen1");
+      const beso = document.getElementById("imagenBeso");
+
+      if (index === 0 || index === 1) {
+        msg.innerText = mensajes[index];
+      }
+
+      if (index === 1) {
+        img1.style.display = "block";
+      }
+
+      if (index === 2) {
+        msg.style.display = "none";
+        img1.style.display = "none";
+        beso.style.display = "block";
+      }
+
+      index++;
+    }
+
+    // 🎆 FUEGOS ARTIFICIALES
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let fireworks = [];
+
+    function createFirework() {
+      let x = Math.random() * canvas.width;
+      let y = Math.random() * canvas.height / 2;
+      let particles = [];
+      for (let i = 0; i < 100; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          dx: Math.cos(i) * Math.random() * 3,
+          dy: Math.sin(i) * Math.random() * 3,
+          alpha: 1,
+          color: `hsl(${Math.random()*360}, 100%, 60%)`
+        });
+      }
+      fireworks.push(particles);
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      fireworks.forEach((particles, fIdx) => {
+        particles.forEach(p => {
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+          ctx.fill();
+          p.x += p.dx;
+          p.y += p.dy;
+          p.alpha -= 0.015;
+        });
+        if (particles[0].alpha <= 0) {
+          fireworks.splice(fIdx, 1);
+        }
+      });
+      requestAnimationFrame(animate);
+    }
+
+    setInterval(createFirework, 1000);
+    animate();
+  </script>
+</body>
+</html>
